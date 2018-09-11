@@ -1,0 +1,52 @@
+plugins {
+    id 'base'
+    id 'cpp'
+}
+
+model {
+    buildTypes {
+        //release
+        debug
+    }
+
+    toolChains {
+        gcc(Gcc)
+        //clang(Clang)
+    }
+
+    platforms {
+        x64 {
+            architecture "x86_64"
+        }
+    }
+
+    binaries {
+        // all withType(NativeExecutableBinarySpec) withType(NativeExecutableSpec)
+        all {
+            // if (toolChain in Gcc) { // Clang
+            println toolChain
+            // "-O2", "-fno-access-control"
+            // cppCompiler.args '-std=c++0x', '-Wno-narrowing'
+            cppCompiler.args '-std=c++0x', '-O0', '-g' // , '-fsanitize=address', '-fno-omit-frame-pointer'
+            linker.args '-g' // , '-fsanitize=address'
+        }
+    }
+
+    components {
+ 	lt(NativeExecutableSpec) {
+            targetPlatform 'x64'
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/main/cpp'
+                        include 'lttoolbox/*.cc'
+                        include 'clb/*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/cpp'
+                    }
+                }
+            }
+        }
+    }
+}
