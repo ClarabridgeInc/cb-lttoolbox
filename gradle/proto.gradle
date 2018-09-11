@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "${groups.protobuf}:protobuf-gradle-plugin:0.8.6"
+    }
+}
+
+apply plugin: "${groups.protobuf}"
+
+protobuf {
+    protoc {
+        artifact = "${groups.protobuf}:protoc:${versions.protobuf}"
+    }
+    generatedFilesBaseDir = "$projectDir/src"
+
+    generateProtoTasks {
+        all()*.builtins {
+            java {}
+            cpp { }
+        }
+        /* all().each { task ->
+            task.builtins {
+                java {}
+                cpp {}
+            }
+        }*/
+
+    }
+}
+
+clean {
+    // remove all generated proto dirs
+    def tree = fileTree(
+        dir: "${protobuf.generatedFilesBaseDir}",
+        includes: [ 'main/java/**/proto/*.*', 'main/cpp/**/*.pb.*']
+    )
+    tree.each {
+        delete it // .getParent() is good for java, but leans up the entire src/main/cpp folder
+    }
+}

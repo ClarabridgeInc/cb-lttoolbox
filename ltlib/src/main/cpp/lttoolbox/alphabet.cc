@@ -24,10 +24,6 @@
 #include <cwchar>
 #include <cwctype>
 
-#ifdef _WIN32
-#include <utf8_fwrap.h>
-#endif
-
 using namespace std;
 
 Alphabet::Alphabet()
@@ -71,17 +67,6 @@ Alphabet::copy(Alphabet const &a)
   spairinv = a.spairinv;
 }
 
-void
-Alphabet::includeSymbol(wstring const &s)
-{
-  if(slexic.find(s) == slexic.end())
-  {
-    int slexic_size = slexic.size();
-    slexic[s] = -(slexic_size+1);
-    slexicinv.push_back(s);
-  }
-}
-
 int
 Alphabet::operator()(int const c1, int const c2)
 {
@@ -110,18 +95,6 @@ Alphabet::operator()(wstring const &s) const
     return -1;
   }
   return it->second;
-}
-
-bool
-Alphabet::isSymbolDefined(wstring const &s)
-{
-  return slexic.find(s) != slexic.end();
-}
-
-int
-Alphabet::size() const
-{
-  return slexic.size();
 }
 
 void
@@ -160,15 +133,14 @@ Alphabet::read(istream &input)
 }
 
 void
-Alphabet::getSymbol(wstring &result, int const symbol, bool uppercase) const
+Alphabet::getSymbol(wstring &result, int const symbol) const
 {
   if(symbol == 0)
   {
     return;
   }
 
-  if(!uppercase)
-  {
+  { // clb: if(!uppercase)
     if(symbol >= 0)
     {
       result += static_cast<wchar_t>(symbol);
@@ -178,70 +150,10 @@ Alphabet::getSymbol(wstring &result, int const symbol, bool uppercase) const
       result.append(slexicinv[-symbol-1]);
     }
   }
-  else if(symbol >= 0)
-  {
-    result += static_cast<wchar_t>(towupper(static_cast<wint_t>(symbol)));
-  }
-  else
-  {
-    result.append(slexicinv[-symbol-1]);
-  }
-}
-
-bool
-Alphabet::isTag(int const symbol) const
-{
-  return symbol < 0;
 }
 
 pair<int, int> const &
 Alphabet::decode(int const code) const
 {
   return spairinv[code];
-}
-
-void Alphabet::setSymbol(int symbol, wstring newSymbolString) {
-  //Should be a special character!
-  if (symbol < 0) slexicinv[-symbol-1] = newSymbolString;
-}
-
-void
-Alphabet::createLoopbackSymbols(set<int> &symbols, Alphabet &basis, Side s, bool nonTagsToo)
-{
-  // Non-tag letters get the same int in spairinv across alphabets,
-  // but tags may differ, so do those separately afterwards.
-  set<int> tags;
-  for(auto& it : basis.spairinv)
-  {
-    if(s == left) {
-      if(basis.isTag(it.first))
-      {
-        tags.insert(it.first);
-      }
-      else if(nonTagsToo)
-      {
-        symbols.insert(operator()(it.first, it.first));
-      }
-    }
-    else {
-      if(basis.isTag(it.second))
-      {
-        tags.insert(it.second);
-      }
-      else if(nonTagsToo)
-      {
-        symbols.insert(operator()(it.second, it.second));
-      }
-    }
-  }
-  for(auto& it : basis.slexic)
-  {
-    // Only include tags that were actually seen on the correct side
-    if(tags.find(it.second) != tags.end())
-    {
-      includeSymbol(it.first);
-      symbols.insert(operator()(operator()(it.first),
-                                operator()(it.first)));
-    }
-  }
 }

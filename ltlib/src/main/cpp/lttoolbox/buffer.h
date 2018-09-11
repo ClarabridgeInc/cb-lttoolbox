@@ -130,29 +130,12 @@ public:
     {
       if(lastpos == size)
       {
-	lastpos = 0;
+	lastpos = 0; // TBD: clb: !!! need to track this !!!
       }
       buf[lastpos++] = value;
       currentpos = lastpos;
       return buf[lastpos - 1];
     }
-
-
-  /**
-   * Add an element to the buffer and not modify its content, getting the
-   * next free reference
-   * @return reference to the stored object.
-   */
-  T & add(void)
-    {
-      if(lastpos == size)
-      {
-	lastpos = 0;
-      }
-      currentpos = lastpos;
-      return buf[lastpos -1];
-    }
-
 
   /**
    * Consume the buffer's current value.
@@ -223,24 +206,6 @@ public:
       else
       {
 	return currentpos + size - prevpos;
-      }
-    }
-
-  /**
-   * Return the range size between the buffer current position and a
-   * outside stored given position that is following to the current.
-   * @param postpos the given position.
-   * @return the range size.
-   */
-  unsigned int diffPostPos(unsigned int const postpos) const
-    {
-      if(postpos >= currentpos)
-      {
-	return postpos - currentpos;
-      }
-      else
-      {
-	return postpos + size - currentpos;
       }
     }
 

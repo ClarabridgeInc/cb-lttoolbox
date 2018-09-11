@@ -110,19 +110,6 @@ public:
   int operator()(wstring const &s);
 
   /**
-   * Check wether the symbol is defined in the alphabet.
-   * @param s symbol
-   * @return true if defined
-   */
-  bool isSymbolDefined(wstring const &s);
-
-  /**
-   * Returns the size of the alphabet (number of symbols).
-   * @return number of symbols.
-   */
-  int size() const;
-
-  /**
    * Read method.
    * @param input input stream.
    */
@@ -132,24 +119,8 @@ public:
    * Concat a symbol in the string that is passed by reference.
    * @param result string where the symbol should be concatenated
    * @param symbol code of the symbol
-   * @param uppercase true if we want an uppercase symbol
    */
-  void getSymbol(wstring &result, int const symbol,
-		 bool uppercase = false) const;
-
-  /**
-   * Checks whether a symbol is a tag or not.
-   * @param symbol the code of the symbol
-   * @return true if the symbol is a tag
-   */
-  bool isTag(int const symbol) const;
-
-  /**
-   * Sets an already existing symbol to represent a new value.
-   * @param symbol the code of the symbol to set
-   * @param newSymbolString the new string for this symbol
-   */
-  void setSymbol(int symbol, wstring newSymbolString);
+  void getSymbol(wstring &result, int const symbol) const;
 
   /**
    * Note: both the symbol int and int-pair are specific to this alphabet instance.
@@ -158,23 +129,6 @@ public:
    * @return the pair which code represents in this alphabet
    */
   pair<int, int> const & decode(int const code) const;
-
-  enum Side
-  {
-    left,
-    right
-  };
-
-  /**
-   * For every symbol a:b in basis, create a pair of the form b:b (or
-   * a:a if s==left), inserting the symbol into symbols, and ensuring
-   * it exists in this alphabet.
-   * @param basis use the symbols from this alphabet
-   * @param symbols all the loopback symbols, referenced with this alphabet
-   * @param s whether to loopback on the left or right side of the symbol-pair
-   * @param nonTagsToo by default only tags are included, but if this is true we include all symbols
-   */
-  void createLoopbackSymbols(set<int> &symbols, Alphabet &basis, Side s = right, bool nonTagsToo = false);
 };
 
 #endif

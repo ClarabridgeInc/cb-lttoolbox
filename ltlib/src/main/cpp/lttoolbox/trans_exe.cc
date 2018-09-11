@@ -17,12 +17,12 @@
 
 #include <lttoolbox/trans_exe.h>
 #include <lttoolbox/compression.h>
-//#include <lttoolbox/lttoolbox_config.h>
 #include <lttoolbox/my_stdio.h>
 
-TransExe::TransExe():
-initial_id(0),
-default_weight(0.0000)
+TransExe::TransExe()
+:
+    initial_id(0),
+    default_weight(0.0000)
 {
 }
 
@@ -142,22 +142,6 @@ TransExe::read(istream &input, Alphabet const &alphabet)
     number_of_states--;
     current_state++;
   }
-}
-
-void
-TransExe::unifyFinals()
-{
-  node_list.resize(node_list.size()+1);
-
-  Node *newfinal = &node_list[node_list.size()-1];
-
-  for(auto& it : finals)
-  {
-    it.first->addTransition(0, 0, newfinal, it.second);
-  }
-
-  finals.clear();
-  finals.insert(make_pair(newfinal, default_weight));
 }
 
 Node *

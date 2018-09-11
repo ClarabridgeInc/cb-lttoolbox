@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package ltt_service;
+option java_package = "com.clarabridge.nlp.serialization.proto";
+option java_outer_classname = "LttService";
+
+message LTTRequest {
+    string text = 1;
+}
+
+message LTTResponse {
+    repeated Token tokens = 1;
+}
+
+enum TokenType {
+    Char = 0;
+    UnkWord = 1;
+    Word = 2;
+}
+
+message Token {
+    TokenType token_type = 1;
+    int32 start = 2;
+    string surface_form = 3;
+    repeated LexForm lex_forms = 4;
+}
+
+message LexForm {
+    string lf = 1; // TBD: maybe move upper?
+    repeated int32 tag_ids = 2;
+}

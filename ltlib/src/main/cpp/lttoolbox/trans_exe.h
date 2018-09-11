@@ -100,11 +100,6 @@ public:
   void read(istream &input, Alphabet const &alphabet);
 
   /**
-   * Reduces all the final states to one
-   */
-  void unifyFinals();
-
-  /**
    * Gets the initial node of the transducer
    * @return the initial node
    */

@@ -79,24 +79,9 @@ private:
   map<Node *, double> standard;
 
   /**
-   * The final states of postblank sections in the dictionaries
-   */
-  map<Node *, double> postblank;
-
-  /**
-   * The final states of preblank sections in the dictionaries
-   */
-  map<Node *, double> preblank;
-
-  /**
    * Merge of 'inconditional', 'standard', 'postblank' and 'preblank' sets
    */
   map<Node *, double> all_finals;
-
-  /**
-   * Queue of blanks, used in reading methods
-   */
-  queue<wstring> blankqueue;
 
   /**
    * Set of characters being considered alphabetics
@@ -114,61 +99,14 @@ private:
   set<wchar_t> ignored_chars;
 
   /**
-   * Mapping of characters for simplistic diacritic restoration specified in RCX files
-   */
-  map<int, set<int> > rcx_map;
-
-  /**
-   * Original char being restored
-   */
-  int rcx_current_char;
-
-  /**
    * Alphabet
    */
   Alphabet alphabet;
 
   /**
-   * Input buffer
-   */
-  Buffer<int> input_buffer;
-
-  /**
    * Begin of the transducer
    */
   Node root;
-
-  /**
-   * if true, uses the dictionary case, discarding surface case
-   * information
-   */
-  bool dictionaryCase;
-
-  /**
-   * if true, displays the final weights (if any)
-   */
-  bool displayWeightsMode;
-
-  /**
-   * try analysing unknown words as compounds
-   */
-  bool do_decomposition;
-
-  /**
-   * Symbol of CompoundOnlyL
-   */
-  int compoundOnlyLSymbol;
-
-  /**
-   * Symbol of CompoundR
-   */
-  int compoundRSymbol;
-
-  /**
-   * Max compound elements
-   * Hard coded for now, but there might come a switch one day
-   */
-  int compound_max_elements;
 
   /**
    * Output no more than 'N' number of weighted analyses
@@ -216,16 +154,11 @@ private:
 
   /**
    * Read text from stream (analysis version, also used in postgeneration)
+   * @param input_buffer the input buffer
    * @param input the stream to read
    * @return the next symbol in the stream
    */
-  int readAnalysis(clb_stream_t input);
-
-  /**
-   * Flush all the blanks remaining in the current process
-   * @param output stream to write blanks
-   */
-  void flushBlanks(FILE *output);
+  int readAnalysis(Buffer<int> &input_buffer, clb_stream_t input);
 
   /**
    * Calculate the initial state of parsing
@@ -238,13 +171,6 @@ private:
   void classifyFinals();
 
   /**
-   * Write a string to an output stream,
-   * @param str the string to write, escaping characters
-   * @param output the stream to write in
-   */
-  void writeEscaped(wstring const &str, FILE *output);
-
-  /**
    * Checks if an string ends with a particular suffix
    * @param str the string to test
    * @param the searched suffix
@@ -252,40 +178,19 @@ private:
    */
   static bool endsWith(wstring const &str, wstring const &suffix);
 
-  /**
-   * Prints a word
-   * @param sf surface form of the word
-   * @param lf lexical form of the word
-   * @param output stream where the word is written
-   */
-  void printWord(wstring const &sf, wstring const &lf, FILE *output);
-
-  /**
-   * Prints an unknown word
-   * @param sf surface form of the word
-   * @param output stream where the word is written
-   */
-  void printUnknownWord(wstring const &sf, FILE *output);
-
   unsigned int lastBlank(wstring const &str);
-  void printSpace(wchar_t const val, FILE *output);
-  wstring compoundAnalysis(wstring str, bool uppercase, bool firstupper);
   size_t firstNotAlpha(wstring const &sf);
-
-  void analysis_wrapper_null_flush(istream &input, FILE *output);
 
 public:
   FSTProcessor();
 
   void initAnalysis();
 
-  void analysis(clb_stream_t input, FILE *output = stdout);
+  void analysis(clb_stream_t input, clb_writer_t out);
 
   void load(istream &input);
 
   bool valid() const;
-
-  void setDictionaryCaseMode(bool const value);
 };
 
 #endif
