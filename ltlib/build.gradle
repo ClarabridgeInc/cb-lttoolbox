@@ -1,9 +1,76 @@
-plugins {
-    id 'base'
-    id 'cpp'
+buildscript {
+    dependencies {
+        classpath libraries.javacpp
+    }
 }
 
-// dependencies { protobuf project(':api') }
+plugins {
+    id 'cpp'
+    id 'java'
+}
+
+dependencies {
+    compile libraries.javacpp
+    testCompile "${groups.junit_jupiter}:junit-jupiter-api:${versions.junit}"
+    testCompile "${groups.junit_jupiter}:junit-jupiter-params:${versions.junit}"
+    testRuntime "${groups.junit_jupiter}:junit-jupiter-engine:${versions.junit}"
+}
+
+// def pathSep = File.pathSeparatorChar
+def javacppGenDir="$buildDir/javacpp"
+
+def mainClassName = 'ltt.LttLibrary'
+
+task generateJavacpp(dependsOn: compileJava) { // compileJava, processResources, classes
+    ext.headerDir = file("$project.buildDir/javacpp")
+    ext.sourceDir = file("$project.buildDir/javacpp")
+    doLast {
+        // copyLibs, header = true
+        new org.bytedeco.javacpp.tools.Builder()
+            .classPaths(compileJava.destinationDir.toString())
+            .classesOrPackages(mainClassName)
+            .outputDirectory(javacppGenDir)
+            //.property("platform.includepath", "$projectDir/src/main/cpp") // -D
+            //.property("platform.includepath", "${rootProject.getRootDir()}/api/src/main/cpp")
+            //.compilerOptions("-fpermissive")
+            .deleteJniFiles(false)
+            .compile(false)
+            .build() // returns the array of produced files
+    }
+}
+
+def javaParent = file(System.getProperty("java.home")).getParentFile().getCanonicalFile()
+
+def extractJavaDirForFile = { fileName -> fileTree(javaParent) { include "**/$fileName" }.getAt(0).getParentFile() }
+
+def javaInclude = extractJavaDirForFile('jni.h')
+def javaPlatformInclude = extractJavaDirForFile('jni_md.h')
+
+task copyLttLib(type: Copy) {
+    from "$buildDir/libs/jniLttLibrary/shared" // ltt/linux-x86_64/libjniLttLibrary.so
+    include '*.so'
+    into "$buildDir/classes/java/main/ltt/linux-x86_64/"
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': mainClassName,
+            'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+        )
+    }
+}
+
+tasks.jar.dependsOn copyLttLib
+tasks.test.dependsOn copyLttLib
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+        // showStandardStreams true
+    }
+}
 
 model {
     buildTypes {
@@ -23,34 +90,47 @@ model {
     }
 
     binaries {
-        // all withType(NativeExecutableBinarySpec) withType(NativeExecutableSpec)
-        all {
+        // all withType(NativeExecutableBinarySpec)
+        withType(SharedLibraryBinarySpec) {
             // if (toolChain in Gcc) { // Clang
             println toolChain
             // "-O2", "-fno-access-control"
             // cppCompiler.args '-std=c++0x', '-Wno-narrowing'
-            cppCompiler.args '-std=c++0x', '-O0', '-g' // , '-fsanitize=address', '-fno-omit-frame-pointer'
-            linker.args '-g', '-pthread' // , '-fsanitize=address'
+            cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
+            linker.args '-D_GLIBCXX_USE_CXX11_ABI=0'
+            // linker.args '-pthread' // '-g', '-fsanitize=address'
         }
     }
 
     components {
- 	lt(NativeExecutableSpec) {
+ 	jniLttLibrary(NativeLibrarySpec) {
             targetPlatform 'x64'
             sources {
                 cpp {
+                    generatedBy project.tasks.generateJavacpp
                     source {
                         srcDirs 'src/main/cpp'
                         include 'lttoolbox/*.cc'
-                        include 'clb/*.cpp'
+                        srcDirs 'build/javacpp'
+                        include '*.cpp'
                     }
                     exportedHeaders {
                         srcDirs 'src/main/cpp'
+                        srcDirs javaInclude
+                        srcDirs javaPlatformInclude
                     }
-                    lib project: ':api', library: 'ltt', linkage: 'static'
+                    lib project: ':api', library: 'lttproto', linkage: 'static'
                     lib project: ':api', library: 'protobuf', linkage: 'static'
                 }
             }
         }
+        all {
+            binaries.withType(StaticLibraryBinarySpec) {
+                buildable = false
+            }
+        }
+    }
+    tasks.copyLttLib {
+        dependsOn jniLttLibrarySharedLibrary
     }
 }

@@ -1,3 +1,3 @@
 #! /usr/bin/env bash
-#export LD_LIBRARY_PATH=build/libs/smallrt/shared:$LD_LIBRARY_PATH
-ltlib/build/exe/lt/lt ben/ben.automorf.bin "$@"
+rm -rf ~/.javacpp
+java -cp /home/iharh/Downloads/javacpp-1.4.2.jar:ltlib/build/libs/ltlib.jar ltt.LttLibrary

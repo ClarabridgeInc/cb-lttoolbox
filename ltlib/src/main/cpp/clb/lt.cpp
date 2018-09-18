@@ -39,7 +39,7 @@ doSingle(FSTProcessor &fstp, const char *inFileName)
 
     if (sOut != EXPECTED_RES)
     {
-        throw Exception("Invalid Res!");
+        throw LttException("Invalid Res!");
     }
     // std::cout << "done: " << sOut << std::endl;
 }
@@ -112,8 +112,8 @@ main(int argc, char *argv[])
             exit(EXIT_FAILURE);
         }
 
-        runMulti(fstp, inFileName, 4);
-        //doSingle(fstp, inFileName); 
+        //runMulti(fstp, inFileName, 4);
+        doSingle(fstp, inFileName); 
     }
     catch (std::exception &e)
     {

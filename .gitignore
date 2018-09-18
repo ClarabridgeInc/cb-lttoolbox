@@ -9,3 +9,6 @@ build/
 **/src/main/java/**/proto/*.java
 **/src/main/cpp/**/*.pb.h
 **/src/main/cpp/**/*.pb.cc
+
+# javacpp copied libs
+**/src/main/resources/**/*.so

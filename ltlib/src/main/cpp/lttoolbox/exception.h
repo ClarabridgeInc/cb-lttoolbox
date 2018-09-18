@@ -20,41 +20,29 @@
 #include <exception>
 #include <string>
 
-class Exception
-: public std::exception
+class LttException : public std::exception
 {
 public:
-  Exception(const char* _msg) throw ()
-  : std::exception(), msg(_msg)
-  {
-  }
+    LttException(const char *_msg) throw ()
+    :
+        std::exception(),
+        msg(_msg)
+    {
+    }
 
-  virtual ~Exception() throw ()
-  {
-  }
+    virtual
+    ~LttException() throw ()
+    {
+    }
 
-  const char* what() const throw ()
-  {
-    return msg.c_str();
-  }
+    const char *
+    what() const throw ()
+    {
+        return msg.c_str();
+    }
 
 private:
-  std::string msg;
-};
-
-class IOException : public Exception {
-public:
-  IOException(const char* _msg) throw () : Exception(_msg) {};
-};
-
-class SerialisationException : public IOException {
-public:
-  SerialisationException(const char* _msg) throw () : IOException(_msg) {};
-};
-
-class DeserialisationException : public IOException {
-public:
-  DeserialisationException(const char* _msg) throw () : IOException(_msg) {};
+    std::string msg;
 };
 
 #endif

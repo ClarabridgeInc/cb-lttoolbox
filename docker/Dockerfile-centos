@@ -1,0 +1,26 @@
+FROM centos:7.5.1804
+
+# Install required packages
+RUN set -x \
+    && yum update -y \
+    && yum install -y which wget make gcc gcc-c++\
+    && yum clean -y all
+
+ENV CLB_CMAKE_VER_BIG 3.12
+ENV CLB_CMAKE_VER_SMALL 2
+RUN wget "https://cmake.org/files/v$CLB_CMAKE_VER_BIG/cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL.tar.gz"\
+    && tar zxvf cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL.tar.gz\
+    && cd cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL\
+    && ./bootstrap --prefix=/usr/local\
+    && make -j$(nproc)\
+    && make install\
+    && cd ..\
+    && rm -rf cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL
+
+ENV CLB_LOCAL_ROOT /usr/local/clarabridge
+
+#COPY ltlib/build/exe/lt $CLB_LOCAL_ROOT/lt
+
+VOLUME [ "$CLB_LOCAL_ROOT/current" ]
+
+WORKDIR $CLB_LOCAL_ROOT/current

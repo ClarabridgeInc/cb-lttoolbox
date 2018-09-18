@@ -51,7 +51,7 @@ FSTProcessor::FSTProcessor()
 void
 FSTProcessor::streamError()
 {
-  throw Exception("Error: Malformed input stream.");
+    throw LttException("Error: Malformed input stream.");
 }
 
 wchar_t

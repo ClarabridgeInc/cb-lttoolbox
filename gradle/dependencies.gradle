@@ -1,15 +1,18 @@
 ext {
     groups = [
         protobuf:           'com.google.protobuf',
-        grpc:               'io.grpc',
+        junit_jupiter:      'org.junit.jupiter',
     ]
     versions = [
         protobuf:           '3.5.1', // TODO: ask PLAT to upgrade to 3.6.1
-        grpc:               '1.9.0',
+        javacpp:            '1.4.2',
+        junit:              '5.3.1',
     ]
     libraries = [
         // protobuf
         protobuf_java:      "${groups.protobuf}:protobuf-java:${versions.protobuf}",
         protobuf_java_util: "${groups.protobuf}:protobuf-java-util:${versions.protobuf}",
+        // javacpp
+        javacpp:            "org.bytedeco:javacpp:${versions.javacpp}",
     ]
 }

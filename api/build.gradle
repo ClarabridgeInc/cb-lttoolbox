@@ -14,9 +14,7 @@ artifacts {
 }
 
 protobuf {
-    // Configure the protoc executable
     protoc {
-        // Download from repositories
         artifact = "com.google.protobuf:protoc:${versions.protobuf}"
     }
 }
@@ -27,19 +25,20 @@ dependencies {
 
 jar.archiveName = "${rootProject.name}-api-${version}.jar"
 
-task generateSource {
-    // $buildDir/
-    ext.headerDir = file("${protobuf.generatedFilesBaseDir}/src/main/cpp")
-    ext.sourceDir = file("${protobuf.generatedFilesBaseDir}/src/main/cpp")
-}
 
 def thirdPartyDir="$repoRootDir/third_party"
 def extractedArchiveDir="$buildDir/extracted"
 
 task extractProtoArchive(type: Copy) {
-    from tarTree("$thirdPartyDir/protobuf-${versions.protobuf}-bin.tar.gz")
+    from tarTree("$thirdPartyDir/protobuf-${versions.protobuf}-bin-gcc48.tar.gz")
     into extractedArchiveDir
     // doLast { println "thirdPartyDir: $thirdPartyDir extractedArchiveDir: $extractedArchiveDir" }
+}
+
+task generateSource(dependsOn: [extractProtoArchive, 'generateProto']) {
+    // $buildDir/
+    ext.headerDir = file("${protobuf.generatedFilesBaseDir}/src/main/cpp")
+    ext.sourceDir = file("${protobuf.generatedFilesBaseDir}/src/main/cpp")
 }
 
 model {
@@ -61,12 +60,13 @@ model {
 
     binaries {
         // all withType(NativeExecutableBinarySpec) withType(NativeExecutableSpec) withType(SharedLibraryBinarySpec)
-        withType(SharedLibraryBinarySpec) {
+        withType(StaticLibraryBinarySpec) {
             // if (toolChain in Gcc) { // Clang
             println toolChain
             // '-O2', '-fno-access-control', '-Wno-narrowing'
-            cppCompiler.args '-std=c++0x', '-O0', '-g' // , '-fsanitize=address', '-fno-omit-frame-pointer'
-            linker.args '-g' // , '-fsanitize=address'
+            cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
+            linker.args '-D_GLIBCXX_USE_CXX11_ABI=0'
+            // linker.args // '-g', '-fsanitize=address'
         }
     }
 
@@ -82,11 +82,10 @@ model {
     }
 
     components {
-        ltt(NativeLibrarySpec) { // ltt(NativeLibrarySpec) ltt(NativeExecutableSpec)
+        lttproto(NativeLibrarySpec) { // ltt(NativeLibrarySpec) ltt(NativeExecutableSpec)
             targetPlatform 'x64'
             sources {
                 cpp {
-                    // generatedBy project.tasks.generateProto
                     generatedBy project.tasks.generateSource
                     source {
                         srcDirs 'src/main/cpp'
@@ -100,12 +99,10 @@ model {
                 }
             }
         }
-    }
-
-    tasks.compileLttSharedLibraryLttCpp {
-        dependsOn extractProtoArchive
+        all {
+            binaries.withType(SharedLibraryBinarySpec) {
+                buildable = false
+            }
+        }
     }
 }
-
-// !!!
-// generateSource.dependsOn project.tasks.generateProto

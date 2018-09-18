@@ -51,6 +51,12 @@ public:
     {
     }
 
+    clb_stream_wstring(const std::wstring &str)
+    :
+        s(str)
+    {
+    }
+
     bool
     eof()
     {
