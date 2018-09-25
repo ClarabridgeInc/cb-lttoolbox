@@ -65,8 +65,7 @@ model {
             println toolChain
             // '-O2', '-fno-access-control', '-Wno-narrowing'
             cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
-            linker.args '-D_GLIBCXX_USE_CXX11_ABI=0'
-            // linker.args // '-g', '-fsanitize=address'
+            // linker.args '-D_GLIBCXX_USE_CXX11_ABI=1' // '-g', '-fsanitize=address'
         }
     }
 

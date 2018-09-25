@@ -23,7 +23,7 @@
 class LttException : public std::exception
 {
 public:
-    LttException(const char *_msg) throw ()
+    LttException(const char *_msg)
     :
         std::exception(),
         msg(_msg)
@@ -31,12 +31,12 @@ public:
     }
 
     virtual
-    ~LttException() throw ()
+    ~LttException()
     {
     }
 
     const char *
-    what() const throw ()
+    what()
     {
         return msg.c_str();
     }

@@ -30,9 +30,6 @@ task generateJavacpp(dependsOn: compileJava) { // compileJava, processResources,
             .classPaths(compileJava.destinationDir.toString())
             .classesOrPackages(mainClassName)
             .outputDirectory(javacppGenDir)
-            //.property("platform.includepath", "$projectDir/src/main/cpp") // -D
-            //.property("platform.includepath", "${rootProject.getRootDir()}/api/src/main/cpp")
-            //.compilerOptions("-fpermissive")
             .deleteJniFiles(false)
             .compile(false)
             .build() // returns the array of produced files
@@ -97,8 +94,7 @@ model {
             // "-O2", "-fno-access-control"
             // cppCompiler.args '-std=c++0x', '-Wno-narrowing'
             cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
-            linker.args '-D_GLIBCXX_USE_CXX11_ABI=0'
-            // linker.args '-pthread' // '-g', '-fsanitize=address'
+            // linker.args '-D_GLIBCXX_USE_CXX11_ABI=1' // '-pthread' // '-g', '-fsanitize=address'
         }
     }
 
