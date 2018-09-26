@@ -2,11 +2,12 @@
 
 #include "ltt.pb.h"
 
+#include "simple_cvt.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <locale>
-#include <codecvt>
 
 using namespace ltt_service;
 
@@ -204,8 +205,6 @@ public:
 class clb_writer_proto
 {
 private:
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> cvt8_16;
-
     LTTResponse lttResponse;
     Token *pToken;
     LexForm *pLexForm;
@@ -221,7 +220,12 @@ private:
     {
         if (pToken != NULL)
         {
-            pToken->set_surface_form(cvt8_16.to_bytes(curChars));
+            std::string sf("");
+            if (!simple_cvt::utf16_to_utf8(curChars, sf))
+            {
+                throw std::runtime_error("clb_writer_proto::flushChars: utf16_to_utf8: invalid utf-16 input found");
+            }
+            pToken->set_surface_form(sf);
             curChars.clear();
             pToken = NULL;
         }
@@ -276,7 +280,14 @@ public:
 
         pToken = lttResponse.add_tokens();
         pToken->set_token_type(TokenType::UnkWord);
-        pToken->set_surface_form(cvt8_16.to_bytes((sf)));
+
+        std::string converted_sf("");
+        if (!simple_cvt::utf16_to_utf8(sf, converted_sf))
+        {
+            throw std::runtime_error("clb_writer_proto::unknownWord: utf16_to_utf8: invalid utf-16 input found");
+        }
+
+        pToken->set_surface_form(converted_sf);
         pToken->set_start(pos);
 
         pos += sf.size();
@@ -289,7 +300,14 @@ public:
     word(std::wstring const &sf)
     {
         pToken->set_token_type(TokenType::Word);
-        pToken->set_surface_form(cvt8_16.to_bytes((sf)));
+
+        std::string converted_sf("");
+        if (!simple_cvt::utf16_to_utf8(sf, converted_sf))
+        {
+            throw std::runtime_error("clb_writer_proto::word: utf16_to_utf8: invalid utf-16 input found");
+        }
+
+        pToken->set_surface_form(converted_sf);
         pToken->set_start(pos);
 
         pos += sf.size();
@@ -325,7 +343,13 @@ public:
     void
     endLF()
     {
-        pLexForm->set_lf(cvt8_16.to_bytes(curLF));
+        std::string converted_lf("");
+        if (!simple_cvt::utf16_to_utf8(curLF, converted_lf))
+        {
+            throw std::runtime_error("clb_writer_proto::endLF: utf16_to_utf8: invalid utf-16 input found");
+        }
+
+        pLexForm->set_lf(converted_lf);
     }
 
     std::string &

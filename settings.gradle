@@ -1,2 +1,4 @@
 rootProject.name = 'lttoolbox'
 include 'api', 'ltlib'
+
+enableFeaturePreview('STABLE_PUBLISHING')

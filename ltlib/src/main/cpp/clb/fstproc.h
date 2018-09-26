@@ -1,7 +1,8 @@
 #pragma once
 
-#include <lttoolbox/fst_processor.h>
-#include <lttoolbox/my_stdio.h>
+#include "lttoolbox/fst_processor.h"
+#include "lttoolbox/compression.h"
+#include "lttoolbox/my_stdio.h"
 
 #include <google/protobuf/stubs/strutil.h>
 
@@ -9,7 +10,6 @@
 #include <iomanip>
 #include <string>
 #include <locale>
-#include <codecvt>
 
 namespace ltt
 {
@@ -18,7 +18,6 @@ class FSTProc
 {
 private:
     FSTProcessor fstp; // -w option // on-by-default // fstp.setDictionaryCaseMode(true)
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 public:
     bool
@@ -34,10 +33,23 @@ public:
     std::string
     analyze(const std::string &text)
     {
-        clb_writer_proto w;
-        std::wstring convertedText = converter.from_bytes(text);
-        clb_stream_wstring ins(convertedText); 
+        std::wstring converted(L"");
+        if (!simple_cvt::utf8_to_utf16(text, converted))
+        {
+            throw std::runtime_error("FSTProc::analyze: utf8_to_utf16: invalid utf-8 input found");
+        }
+        // simple_cvt::dump_hex("text->utf16", converted.c_str(), converted.size());
 
+        // std::string convertedBack("");
+        // if (!simple_cvt::utf16_to_utf8(converted, convertedBack))
+        //{
+        //    throw std::runtime_error("utf16_to_utf8: invalid utf-16 input found");
+        //}
+        // simple_cvt::dump_hex("text", text.c_str(), text.size());
+        // simple_cvt::dump_hex("converted back", convertedBack.c_str(), convertedBack.size());
+
+        clb_stream_wstring ins(converted); 
+        clb_writer_proto w;
         fstp.analysis(ins, w);
 
         std::string result("");

@@ -1,6 +1,9 @@
 plugins {
     id 'java'
+    id 'maven-publish'
     id 'com.google.protobuf' version '0.8.6'
+
+    id 'org.ajoberstar.reckon' version '0.8.0'
 }
 
 ext {
@@ -12,3 +15,10 @@ subprojects {
     apply from: "${gradleRootDir}/repositories.gradle" // imports build-utils.gradle
     apply from: "${gradleRootDir}/dependencies.gradle"
 }
+
+reckon {
+    scopeFromProp()
+    stageFromProp('alpha','beta', 'final')
+}
+
+reckonTagCreate.dependsOn check

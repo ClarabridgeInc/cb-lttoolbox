@@ -7,7 +7,10 @@ buildscript {
 plugins {
     id 'cpp'
     id 'java'
+    id 'maven-publish'
 }
+
+apply from: "${gradleRootDir}/java.gradle"
 
 dependencies {
     compile libraries.javacpp
@@ -16,7 +19,6 @@ dependencies {
     testRuntime "${groups.junit_jupiter}:junit-jupiter-engine:${versions.junit}"
 }
 
-// def pathSep = File.pathSeparatorChar
 def javacppGenDir="$buildDir/javacpp"
 
 def mainClassName = 'ltt.LttLibrary'
@@ -25,7 +27,6 @@ task generateJavacpp(dependsOn: compileJava) { // compileJava, processResources,
     ext.headerDir = file("$project.buildDir/javacpp")
     ext.sourceDir = file("$project.buildDir/javacpp")
     doLast {
-        // copyLibs, header = true
         new org.bytedeco.javacpp.tools.Builder()
             .classPaths(compileJava.destinationDir.toString())
             .classesOrPackages(mainClassName)
@@ -94,7 +95,7 @@ model {
             // "-O2", "-fno-access-control"
             // cppCompiler.args '-std=c++0x', '-Wno-narrowing'
             cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
-            // linker.args '-D_GLIBCXX_USE_CXX11_ABI=1' // '-pthread' // '-g', '-fsanitize=address'
+            // linker.args '-pthread' // '-g', '-fsanitize=address'
         }
     }
 
@@ -107,6 +108,7 @@ model {
                     source {
                         srcDirs 'src/main/cpp'
                         include 'lttoolbox/*.cc'
+                        include 'clb/*.cpp'
                         srcDirs 'build/javacpp'
                         include '*.cpp'
                     }
@@ -128,5 +130,32 @@ model {
     }
     tasks.copyLttLib {
         dependsOn jniLttLibrarySharedLibrary
+    }
+}
+
+publishing {
+    publications {
+        ltlib(MavenPublication) {
+            from components.java
+            groupId 'clarabridge'
+            artifactId "cb-lttoolbox-${name}-linux"
+            //version version // project.version, semver
+        }
+    }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url project.'nexus.repo.publish' //"$buildDir/repo"
+            credentials {
+                username = project.'nexus.deploy.user'
+                password = project.'nexus.deploy.password'
+            }
+        }
+    }
+}
+
+task dumpInfo {
+    doLast {
+        println "ltlib version is: ${project.version}"
     }
 }

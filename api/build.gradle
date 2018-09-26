@@ -1,7 +1,7 @@
 plugins {
     id 'cpp'
     id 'java'
-    //id 'maven-publish'
+    id 'maven-publish'
 }
 
 apply from: "${gradleRootDir}/java.gradle"
@@ -101,6 +101,27 @@ model {
         all {
             binaries.withType(SharedLibraryBinarySpec) {
                 buildable = false
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        api(MavenPublication) {
+            from components.java
+            groupId 'clarabridge'
+            artifactId "cb-lttoolbox-${name}"
+            //version version // project.version, semver
+        }
+    }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url project.'nexus.repo.publish' //"$buildDir/repo"
+            credentials {
+                username = project.'nexus.deploy.user'
+                password = project.'nexus.deploy.password'
             }
         }
     }
