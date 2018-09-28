@@ -1,0 +1,5 @@
+task dumpInfo {
+    doLast {
+        println "$name version is: ${project.version}"
+    }
+}

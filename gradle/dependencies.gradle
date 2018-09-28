@@ -1,18 +1,45 @@
 ext {
     groups = [
-        protobuf:           'com.google.protobuf',
-        junit_jupiter:      'org.junit.jupiter',
+        lombok:                     'org.projectlombok',
+        protobuf:                   'com.google.protobuf',
+        slf4j:                      'org.slf4j',
+
+        junit_jupiter:              'org.junit.jupiter',
+
+        springfox:                  'io.springfox',
     ]
     versions = [
-        protobuf:           '3.5.1', // TODO: ask PLAT to upgrade to 3.6.1
-        javacpp:            '1.4.2',
-        junit:              '5.3.1',
+        lombok:                     '1.18.2',
+        protobuf:                   '3.5.1', // TODO: ask PLAT to upgrade to 3.6.1
+        javacpp:                    '1.4.2',
+
+        slf4j:                      '1.7.5', // 1.7.25
+
+        junit:                      '5.3.1',
+
+        swagger:                    '2.9.2',
     ]
     libraries = [
+        lombok:                     "${groups.lombok}:lombok:${versions.lombok}",
         // protobuf
-        protobuf_java:      "${groups.protobuf}:protobuf-java:${versions.protobuf}",
-        protobuf_java_util: "${groups.protobuf}:protobuf-java-util:${versions.protobuf}",
+        protobuf_java:              "${groups.protobuf}:protobuf-java:${versions.protobuf}",
+        protobuf_java_util:         "${groups.protobuf}:protobuf-java-util:${versions.protobuf}",
         // javacpp
-        javacpp:            "org.bytedeco:javacpp:${versions.javacpp}",
+        javacpp:                    "org.bytedeco:javacpp:${versions.javacpp}",
+        // slf4j
+        log4j_over_slf4j:           "${groups.slf4j}:log4j-over-slf4j:${versions.slf4j}",
+        // logback
+        logstash_logback_encoder:   'net.logstash.logback:logstash-logback-encoder:5.2',
+        // commons
+        commons_io:                 'commons-io:commons-io:2.6',
+        // swagger
+        swagger2:                   "${groups.springfox}:springfox-swagger2:${versions.swagger}",
+        swagger_ui:                 "${groups.springfox}:springfox-swagger-ui:${versions.swagger}",
+        // junit
+        junit_jupiter_api:          "${groups.junit_jupiter}:junit-jupiter-api:${versions.junit}",
+        junit_jupiter_params:       "${groups.junit_jupiter}:junit-jupiter-params:${versions.junit}",
+        junit_jupiter_engine:       "${groups.junit_jupiter}:junit-jupiter-engine:${versions.junit}",
+        // assertj
+        assertj:                    'org.assertj:assertj-core:3.11.1',
     ]
 }

@@ -1,0 +1,98 @@
+import org.apache.tools.ant.filters.*
+
+buildscript {
+    ext {
+        springBootVersion = '2.0.5.RELEASE'
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id "net.ltgt.apt" version '0.18'
+}
+
+apply from: "${gradleRootDir}/java.gradle"
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+version='0.0.1' // project.'lttoolbox.service.version'
+
+dependencies {
+    compile project(':api')
+    compile project(':ltlib')
+
+    // spring boot
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-jetty'
+    compile 'org.springframework.boot:spring-boot-starter-actuator' // for manage
+
+    // metrics
+    runtime 'io.micrometer:micrometer-registry-prometheus'
+
+    // swagger
+    compile libraries.swagger2
+    compile libraries.swagger_ui
+
+    // commons
+    compile libraries.commons_io
+
+    // logging
+    compile libraries.log4j_over_slf4j
+    compile libraries.logstash_logback_encoder
+
+    // lombok
+    compileOnly         libraries.lombok
+    annotationProcessor libraries.lombok
+
+    testCompile('org.springframework.boot:spring-boot-starter-test') // testImplementation
+    testCompile libraries.junit_jupiter_api
+    testCompile libraries.junit_jupiter_params
+    testRuntime libraries.junit_jupiter_engine
+}
+
+bootJar {
+    //archiveName = "${rootProject.name}-impl-${version}.jar"
+    // manifest {
+    //    attributes 'Main-Class': 'org.springframework.boot.loader.PropertiesLauncher'
+    //}
+}
+
+processResources {
+    filesMatching('**/bootstrap.yml') {
+       filter(ReplaceTokens, tokens: [version: project.version])
+   }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+        // showStandardStreams true
+    }
+}
+
+publishing {
+    publications {
+        ltlib(MavenPublication) {
+            from components.java
+            groupId 'clarabridge'
+            artifactId "cb-lttoolbox-${name}"
+            //version version // project.version, semver
+        }
+    }
+    repositories {
+        maven {
+            // change to point to your repo, e.g. http://my.org/repo
+            url project.'nexus.repo.publish' //"$buildDir/repo"
+            credentials {
+                username = project.'nexus.deploy.user'
+                password = project.'nexus.deploy.password'
+            }
+        }
+    }
+}

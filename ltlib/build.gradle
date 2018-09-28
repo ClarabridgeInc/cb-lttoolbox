@@ -14,6 +14,9 @@ apply from: "${gradleRootDir}/java.gradle"
 
 dependencies {
     compile libraries.javacpp
+
+    testCompile libraries.commons_io
+    testCompile libraries.protobuf_java_util // looks like we actully need only guava for tests
     testCompile "${groups.junit_jupiter}:junit-jupiter-api:${versions.junit}"
     testCompile "${groups.junit_jupiter}:junit-jupiter-params:${versions.junit}"
     testRuntime "${groups.junit_jupiter}:junit-jupiter-engine:${versions.junit}"
@@ -151,11 +154,5 @@ publishing {
                 password = project.'nexus.deploy.password'
             }
         }
-    }
-}
-
-task dumpInfo {
-    doLast {
-        println "ltlib version is: ${project.version}"
     }
 }

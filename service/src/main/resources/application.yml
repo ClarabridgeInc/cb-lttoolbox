@@ -1,0 +1,25 @@
+server:
+  port: 8080
+management:
+  server:
+    port: 9090
+    security:
+      enabled: false
+  endpoints:
+    web:
+      base-path: /application
+      exposure:
+        include: info,health,prometheus
+  info:
+      enabled: true
+      defaults:
+          enabled: true
+endpoints:
+  env:
+    enabled: true
+info:
+  env:
+    java:
+      vendor: ${java.specification.vendor}
+      vm-name: ${java.vm.name}
+      runtime-version: ${java.runtime.version}

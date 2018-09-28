@@ -4,7 +4,7 @@
 #include "lttoolbox/compression.h"
 #include "lttoolbox/my_stdio.h"
 
-#include <google/protobuf/stubs/strutil.h>
+//#include <google/protobuf/stubs/strutil.h>
 
 #include <iostream>
 #include <iomanip>
@@ -19,15 +19,28 @@ class FSTProc
 private:
     FSTProcessor fstp; // -w option // on-by-default // fstp.setDictionaryCaseMode(true)
 
+    bool
+    initAndCheckValidity()
+    {
+        fstp.initAnalysis();
+        return fstp.valid();
+    }
+
 public:
     bool
-    init(const std::string &fstFileName)
+    initFromFile(const std::string &fstFileName)
     {
         std::ifstream ifs(fstFileName, std::ifstream::binary);
         fstp.load(ifs);
+        return initAndCheckValidity();
+    }
 
-        fstp.initAnalysis();
-        return fstp.valid();
+    bool
+    initFromMemory(const std::string &fstString)
+    {
+        std::istringstream iss(fstString); // ios_base::in
+        fstp.load(iss);
+        return initAndCheckValidity();
     }
 
     std::string
@@ -53,7 +66,9 @@ public:
         fstp.analysis(ins, w);
 
         std::string result("");
-        google::protobuf::Base64Escape(w.get_serialized(), &result);
+        // google::protobuf::Base64Escape(w.get_serialized(), &result);
+        result = w.get_serialized();
+
         return result;
     }
 };
