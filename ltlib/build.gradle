@@ -17,9 +17,10 @@ dependencies {
 
     testCompile libraries.commons_io
     testCompile libraries.protobuf_java_util // looks like we actully need only guava for tests
-    testCompile "${groups.junit_jupiter}:junit-jupiter-api:${versions.junit}"
-    testCompile "${groups.junit_jupiter}:junit-jupiter-params:${versions.junit}"
-    testRuntime "${groups.junit_jupiter}:junit-jupiter-engine:${versions.junit}"
+
+    testCompile libraries.junit_jupiter_api
+    testCompile libraries.junit_jupiter_params
+    testRuntime libraries.junit_jupiter_engine
 }
 
 def javacppGenDir="$buildDir/javacpp"
