@@ -7,7 +7,7 @@ plugins {
 apply from: "${gradleRootDir}/java.gradle"
 apply from: "${gradleRootDir}/proto.gradle"
 
-version='0.0.1' // project.'lttoolbox.api.version'
+// version='0.0.1' // project.'lttoolbox.api.version'
 
 artifacts {
     compile jar

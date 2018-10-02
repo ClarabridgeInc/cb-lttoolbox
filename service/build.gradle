@@ -20,7 +20,7 @@ apply from: "${gradleRootDir}/java.gradle"
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
-version='0.0.1' // project.'lttoolbox.service.version'
+// version='0.0.1' // project.'lttoolbox.service.version'
 
 dependencies {
     compile project(':api')

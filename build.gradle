@@ -15,6 +15,7 @@ subprojects {
     apply from: "${gradleRootDir}/repositories.gradle" // imports build-utils.gradle
     apply from: "${gradleRootDir}/dependencies.gradle"
     apply from: "${gradleRootDir}/dump.gradle"
+    project.version='0.1.0' // TODO: recon-based auto-calculation has temporary bug at ReckonPlugin$DelayedVersion
 }
 
 reckon {
