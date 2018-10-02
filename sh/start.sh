@@ -9,7 +9,9 @@ JAR_NAME=`find $BUILD_PATH/libs -name "service-*.jar"`
 JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4144"
 
     # -Dlog4j.debug=true\
+    #-Dspring.profiles.active=prod\
 java \
     -Dserver.port=$LTT_SVC_PORT\
+    -Dspring.profiles.active=dev\
     $JPDA_OPTS\
     -jar $JAR_NAME
