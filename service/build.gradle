@@ -78,7 +78,7 @@ test {
 
 publishing {
     publications {
-        ltlib(MavenPublication) {
+        service(MavenPublication) {
             from components.java
             groupId 'clarabridge'
             artifactId "cb-lttoolbox-${name}"
