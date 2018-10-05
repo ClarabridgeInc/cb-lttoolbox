@@ -2,7 +2,7 @@ server:
   port: 8080
 management:
   server:
-    port: 9090
+    port: 9099
     security:
       enabled: false
   endpoints:
