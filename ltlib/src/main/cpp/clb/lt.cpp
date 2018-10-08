@@ -11,7 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <thread>
+//#include <thread>
 #include <functional>
 
 void
@@ -23,7 +23,7 @@ printArgs(int argc, char *argv[])
     }
 }
 
-static std::string EXPECTED_RES("CgYIARoCICAKYggCEAcaFeCmnOCmvuCmruCmv+CmsuCmleCnhyJFCg/gppzgpr7gpq7gpr/gprISMv7//////////wHz//////////8B4P//////////Adf//////////wHT//////////8BCgUQDhoBIAojIiEKCeCmpuCnh+CmlhIU9v//////////AcH//////////wEKNyI1Cgngpqbgp4fgppYSKPb//////////wHH//////////8ByP//////////Ac3//////////wEKUwgCEA8aDOCmpuCnh+CmluCnhyI/Cgngpqbgp4fgppYSMvb//////////wHH//////////8ByP//////////Ac7//////////wHi//////////8BCgUQExoBIApNCAIQFBoJ4Kau4Kao4KeHIjwKBuCmruCmqBIy////////////Ad7//////////wHc//////////8B1///////////AdH//////////wEKBRAXGgEgCjEiLwoD4Ka5Eij2//////////8Bx///////////Acb//////////wHN//////////8BClAIAhAYGg/gprngpprgp43gppvgp4ciOQoD4Ka5EjL2//////////8Bx///////////Acb//////////wHO//////////8B4v//////////AQoFEB0aASAKCggBEB4aBCDigJgKUAgCECoaCeCmrOCmvuCmmCI/Cgngpqzgpr7gppgSMv///////////wHg//////////8B2///////////Adf//////////wHU//////////8BCgcQLRoD4oCZChgIAhAuGgEuIg8KAS4SCr///////////wEKGAgCEC8aAS4iDwoBLhIKv///////////AQ==");
+static std::string EXPECTED_RES("ChMIARoP4KaW4Ka+4Kay4Ka/4KamCgYQBRoCICAKYggCEAcaFeCmnOCmvuCmruCmv+CmsuCmleCnhyJFCg/gppzgpr7gpq7gpr/gprISMv7//////////wHz//////////8B4P//////////Adf//////////wHT//////////8BCgUQDhoBIAqtAQgCEA8aDOCmpuCnh+CmluCnhyIhCgngpqbgp4fgppYSFPb//////////wHB//////////8BIjUKCeCmpuCnh+CmlhIo9v//////////Acf//////////wHI//////////8Bzf//////////ASI/Cgngpqbgp4fgppYSMvb//////////wHH//////////8ByP//////////Ac7//////////wHi//////////8BCgUQExoBIApNCAIQFBoJ4Kau4Kao4KeHIjwKBuCmruCmqBIy////////////Ad7//////////wHc//////////8B1///////////AdH//////////wEKBRAXGgEgCoEBCAIQGBoP4Ka54Kaa4KeN4Kab4KeHIi8KA+CmuRIo9v//////////Acf//////////wHG//////////8Bzf//////////ASI5CgPgprkSMvb//////////wHH//////////8Bxv//////////Ac7//////////wHi//////////8BCgUQHRoBIAokCAEQHhoe4KaW4Ka+4KaB4Kaa4Ka+4Kas4Kao4KeN4Kam4Ka/CggQKBoEIOKAmApQCAIQKhoJ4Kas4Ka+4KaYIj8KCeCmrOCmvuCmmBIy////////////AeD//////////wHb//////////8B1///////////AdT//////////wEKBxAtGgPigJkKGAgCEC4aASEiDwoBIRIKv///////////AQ==");
 
 void
 doSingle(FSTProcessor &fstp, const char *inFileName)
@@ -41,9 +41,13 @@ doSingle(FSTProcessor &fstp, const char *inFileName)
     {
         throw LttException("Invalid Res!");
     }
-    // std::cout << "done: " << sOut << std::endl;
+
+    std::wstring wOut(L"");
+    simple_cvt::utf8_to_utf16(sOut, wOut);
+    std::wcout << L"escaped result: " << wOut << std::endl;
 }
 
+/*
 void
 doMulti(FSTProcessor &fstp, const char *inFileName, size_t idx)
 {
@@ -72,6 +76,7 @@ runMulti(FSTProcessor &fstp, const char *inFileName, size_t num_threads)
         itr->join();
     }
 }
+*/
 
 int
 main(int argc, char *argv[])

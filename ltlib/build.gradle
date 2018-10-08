@@ -101,6 +101,12 @@ model {
             cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
             // linker.args '-pthread' // '-g', '-fsanitize=address'
         }
+        withType(NativeExecutableBinarySpec) {
+            cppCompiler.define 'PRINT_WRITER_PROTO'
+            // cppCompiler.define 'PRINT_ALPHABET_READ'
+            // TODO: eliminate boilerplate
+            cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0'
+        }
     }
 
     components {
@@ -112,9 +118,29 @@ model {
                     source {
                         srcDirs 'src/main/cpp'
                         include 'lttoolbox/*.cc'
-                        include 'clb/*.cpp'
+                        // include 'clb/*.cpp'
                         srcDirs 'build/javacpp'
                         include '*.cpp'
+                    }
+                    exportedHeaders {
+                        srcDirs 'src/main/cpp'
+                        srcDirs javaInclude
+                        srcDirs javaPlatformInclude
+                    }
+                    lib project: ':api', library: 'lttproto', linkage: 'static'
+                    lib project: ':api', library: 'protobuf', linkage: 'static'
+                }
+            }
+        }
+ 	lt(NativeExecutableSpec) {
+            targetPlatform 'x64'
+            sources {
+                cpp {
+                    source {
+                        srcDirs 'src/main/cpp'
+                        include 'lttoolbox/*.cc'
+                        srcDirs 'src/main/cpp'
+                        include 'clb/lt.cpp'
                     }
                     exportedHeaders {
                         srcDirs 'src/main/cpp'

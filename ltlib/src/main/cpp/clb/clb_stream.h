@@ -226,6 +226,12 @@ private:
                 throw std::runtime_error("clb_writer_proto::flushChars: utf16_to_utf8: invalid utf-16 input found");
             }
             pToken->set_surface_form(sf);
+#ifdef PRINT_WRITER_PROTO
+            if (sf.size() == 0)
+            {
+                std::wcout << "!save empty token!" << std::endl;
+            }
+#endif
             curChars.clear();
             pToken = NULL;
         }
@@ -246,6 +252,9 @@ public:
     void
     done()
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"done" << std::endl;
+#endif
         serialized_data.clear();
         lttResponse.SerializeToString(&serialized_data);
         lttResponse.Clear();
@@ -260,6 +269,9 @@ public:
     void
     ch(wchar_t ch)
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"pos: " << pos << L" ch: \'" << ch << L"\'" << std::endl;
+#endif
         if (pToken == NULL)
         {
             pToken = lttResponse.add_tokens();
@@ -276,6 +288,9 @@ public:
     void
     unknownWord(std::wstring const &sf)
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"unkword pos: " << pos << L" sf: \'" << sf << L"\'" << std::endl;
+#endif
         flushChars();
 
         pToken = lttResponse.add_tokens();
@@ -291,6 +306,8 @@ public:
         pToken->set_start(pos);
 
         pos += sf.size();
+
+        pToken = NULL;
     }
 
     // Prints a word
@@ -299,6 +316,9 @@ public:
     void
     word(std::wstring const &sf)
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"word pos: " << pos << L" sf: \'" << sf << L"\'" << std::endl;
+#endif
         pToken->set_token_type(TokenType::Word);
 
         std::string converted_sf("");
@@ -318,9 +338,15 @@ public:
     void
     beginLF(double w)
     {
-        flushChars();
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"beginLF" << std::endl;
+#endif
+        if (pToken != NULL && curChars.size() > 0)
+        {
+            flushChars();
+        }
 
-        if (!pToken)
+        if (pToken == NULL)
         {
             pToken = lttResponse.add_tokens();
         }
@@ -331,18 +357,27 @@ public:
     void
     chLF(wchar_t ch)
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"chLF: " << ch << std::endl;
+#endif
         curLF.append(1, ch);
     }
 
     void
     tagLF(std::wstring tag, int tag_id)
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"tagLF: " << tag << std::endl;
+#endif
         pLexForm->add_tag_ids(tag_id);
     }
 
     void
     endLF()
     {
+#ifdef PRINT_WRITER_PROTO
+        std::wcout << L"endLF" << std::endl;
+#endif
         std::string converted_lf("");
         if (!simple_cvt::utf16_to_utf8(curLF, converted_lf))
         {

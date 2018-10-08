@@ -24,6 +24,10 @@
 #include <cwchar>
 #include <cwctype>
 
+#ifdef PRINT_ALPHABET_READ
+#   include <iostream>
+#endif
+
 using namespace std;
 
 Alphabet::Alphabet()
@@ -112,7 +116,11 @@ Alphabet::read(istream &input)
     tam--;
     wstring mytag = L"<" + Compression::wstring_read(input) + L">";
     a_new.slexicinv.push_back(mytag);
-    a_new.slexic[mytag]= -a_new.slexicinv.size();
+    int tag_id = -a_new.slexicinv.size();
+    a_new.slexic[mytag]= tag_id;
+#ifdef PRINT_ALPHABET_READ
+    std::wcout << mytag << L": " << tag_id << std::endl;
+#endif
   }
 
   // Reading of pairlist
