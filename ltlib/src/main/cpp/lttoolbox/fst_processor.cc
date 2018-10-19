@@ -193,17 +193,10 @@ FSTProcessor::readAnalysis(Buffer<int> &input_buffer, clb_stream_t &input)
 }
 
 void
-FSTProcessor::analysis(clb_stream_t &input, clb_writer_t out)
+FSTProcessor::analysisIterattion(clb_stream_t &input, clb_writer_t out, State &current_state,
+        wstring &sf, bool &lf, bool &last_incond,
+        int &last, Buffer<int> &input_buffer, wchar_t val)
 {
-  bool last_incond = false;
-  State current_state = initial_state;
-  wstring sf = L"";   //surface form
-  bool lf = false;    //lexical form (lema) found
-  int last = 0;
-  Buffer<int> input_buffer; // clb: this buffer can recycle !
-
-  while(wchar_t val = readAnalysis(input_buffer, input))
-  {
     // test for final states
     if(current_state.isFinal(all_finals))
     {
@@ -325,7 +318,28 @@ FSTProcessor::analysis(clb_stream_t &input, clb_writer_t out)
       lf = false;
       last_incond = false;
     }
+}
+
+void
+FSTProcessor::analysis(clb_stream_t &input, clb_writer_t out)
+{
+  State current_state = initial_state;
+  bool last_incond = false;
+  wstring sf = L"";   //surface form
+  bool lf = false;    //lexical form (lema) found
+  int last = 0;
+  Buffer<int> input_buffer; // clb: this buffer can recycle !
+
+  while (wchar_t val = readAnalysis(input_buffer, input))
+  {
+      analysisIterattion(input, out, current_state, sf, lf, last_incond, last, input_buffer, val);
   }
+
+  while (last_incond)
+  {
+      analysisIterattion(input, out, current_state, sf, lf, last_incond, last, input_buffer, ' ');
+  }
+
   out.done(); 
 }
 
