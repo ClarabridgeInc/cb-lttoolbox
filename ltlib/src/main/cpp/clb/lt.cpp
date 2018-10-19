@@ -37,10 +37,10 @@ doSingle(FSTProcessor &fstp, const char *inFileName)
     std::string sOut("");
     google::protobuf::Base64Escape(w.get_serialized(), &sOut);
 
-    if (sOut != EXPECTED_RES)
+    /*if (sOut != EXPECTED_RES)
     {
         throw LttException("Invalid Res!");
-    }
+    }*/
 
     std::wstring wOut(L"");
     simple_cvt::utf8_to_utf16(sOut, wOut);

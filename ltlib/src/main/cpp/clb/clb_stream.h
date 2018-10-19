@@ -151,7 +151,6 @@ public:
     void
     ch(wchar_t ch)
     {
-        // if(isEscaped(val)) { fputwc_unlocked(L'\\', pOut); }
         std::wcout << L"pos: " << pos << L" ch: \'" << ch << L"\'" << std::endl;
         pos += 1;
     }

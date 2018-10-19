@@ -148,13 +148,10 @@ public:
    * All outputs of current parsing from the final nodes of the state
    * @param finals the set of final nodes
    * @param a the alphabet to decode strings
-   * @param escaped_chars the set of chars to be preceded with one
-   *                      backslash
    * @return the result of the transduction
    */
   bool filterFinals(map<Node *, double> const &finals,
                     Alphabet const &a,
-                    set<wchar_t> const &escaped_chars,
                     int max_analyses,
                     int max_weight_classes,
                     clb_writer_t out) const;
