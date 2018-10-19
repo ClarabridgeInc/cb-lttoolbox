@@ -93,11 +93,12 @@ model {
 
     binaries {
         // all withType(NativeExecutableBinarySpec)
+            // "-O2", "-fno-access-control", '-Wno-narrowing', '-O3'
+            // '-O0', '-g'
+
         withType(SharedLibraryBinarySpec) {
             // if (toolChain in Gcc) { // Clang
             println toolChain
-            // "-O2", "-fno-access-control"
-            // cppCompiler.args '-std=c++0x', '-Wno-narrowing'
             cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' // '-O0', '-g', '-fsanitize=address', '-fno-omit-frame-pointer'
             // linker.args '-pthread' // '-g', '-fsanitize=address'
         }

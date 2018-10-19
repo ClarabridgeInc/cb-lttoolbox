@@ -2,6 +2,8 @@ build/
 logs/
 .gradle/*
 */**/.gradle/*
+.vscode/*
+*/**/.vscode/*
 */*.log
 */*.sav
 */*.out

@@ -29,19 +29,6 @@ FSTProcessor::FSTProcessor()
 :
     default_weight(0.0000)
 {
-  // escaped_chars chars
-  escaped_chars.insert(L'[');
-  escaped_chars.insert(L']');
-  escaped_chars.insert(L'{');
-  escaped_chars.insert(L'}');
-  escaped_chars.insert(L'^');
-  escaped_chars.insert(L'$');
-  escaped_chars.insert(L'/');
-  escaped_chars.insert(L'\\');
-  escaped_chars.insert(L'@');
-  escaped_chars.insert(L'<');
-  escaped_chars.insert(L'>');
-
   maxAnalyses = INT_MAX;
   maxWeightClasses = INT_MAX;
 
@@ -52,53 +39,6 @@ void
 FSTProcessor::streamError()
 {
     throw LttException("Error: Malformed input stream.");
-}
-
-wchar_t
-FSTProcessor::readEscaped(clb_stream_t &input)
-{
-  if(input.eof())
-  {
-    streamError();
-  }
-
-  wchar_t val = input.getWC();
-
-  if(input.eof() || !isEscaped(val))
-  {
-    streamError();
-  }
-
-  return val;
-}
-
-wstring
-FSTProcessor::readFullBlock(clb_stream_t &input, wchar_t const delim1, wchar_t const delim2)
-{
-  wstring result = L"";
-  result += delim1;
-  wchar_t c = delim1;
-
-  while(!input.eof() && c != delim2)
-  {
-    c = input.getWC();
-    result += c;
-    if(c != L'\\')
-    {
-      continue;
-    }
-    else
-    {
-      result += static_cast<wchar_t>(readEscaped(input));
-    }
-  }
-
-  if(c != delim2)
-  {
-    streamError();
-  }
-
-  return result;
 }
 
 void
@@ -151,12 +91,6 @@ FSTProcessor::classifyFinals()
       exit(EXIT_FAILURE);
     }
   }
-}
-
-bool
-FSTProcessor::isEscaped(wchar_t const c) const
-{
-  return escaped_chars.find(c) != escaped_chars.end();
 }
 
 unsigned int
@@ -254,30 +188,6 @@ FSTProcessor::readAnalysis(Buffer<int> &input_buffer, clb_stream_t &input)
     val = input.getWC();
   }
 
-  int altval = 0;
-  if(isEscaped(val))
-  {
-    switch(val)
-    {
-      case L'<':
-        altval = static_cast<int>(alphabet(readFullBlock(input, L'<', L'>')));
-        input_buffer.add(altval);
-        return altval;
-
-      case L'\\':
-        val = input.getWC();
-        if(!isEscaped(val))
-        {
-          streamError();
-        }
-        input_buffer.add(static_cast<int>(val));
-        return val;
-
-      default:
-        streamError();
-    }
-  }
-
   input_buffer.add(val);
   return val;
 }
@@ -299,13 +209,13 @@ FSTProcessor::analysis(clb_stream_t &input, clb_writer_t out)
     {
       if(current_state.isFinal(inconditional))
       {
-        lf = current_state.filterFinals(all_finals, alphabet, escaped_chars, maxAnalyses, maxWeightClasses, out);
+        lf = current_state.filterFinals(all_finals, alphabet, maxAnalyses, maxWeightClasses, out);
         last_incond = true;
         last = input_buffer.getPos();
       }
       else if(!isAlphabetic(val))
       {
-        lf = current_state.filterFinals(all_finals, alphabet, escaped_chars, maxAnalyses, maxWeightClasses, out);
+        lf = current_state.filterFinals(all_finals, alphabet, maxAnalyses, maxWeightClasses, out);
         last_incond = false;
         last = input_buffer.getPos();
       }

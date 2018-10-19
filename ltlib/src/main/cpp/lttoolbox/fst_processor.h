@@ -89,11 +89,6 @@ private:
   set<wchar_t> alphabetic_chars;
 
   /**
-   * Set of characters to escape with a backslash
-   */
-  set<wchar_t> escaped_chars;
-
-  /**
    * Set of characters to ignore
    */
   set<wchar_t> ignored_chars;
@@ -124,33 +119,11 @@ private:
   void streamError();
 
   /**
-   * Reads a character that is defined in the set of escaped_chars
-   * @param input the stream to read from
-   * @return code of the character
-   */
-  wchar_t readEscaped(clb_stream_t input);
-
-  /**
-   * Reads a block from the stream input, enclosed by delim1 and delim2
-   * @param input the stream being read
-   * @param delim1 the delimiter of the beginning of the sequence
-   * @param delim1 the delimiter of the end of the sequence
-   */
-  wstring readFullBlock(clb_stream_t input, wchar_t const delim1, wchar_t const delim2);
-
-  /**
    * Returns true if the character code is identified as alphabetic
    * @param c the code provided by the user
    * @return true if it's alphabetic
    */
   bool isAlphabetic(wchar_t const c) const;
-
-  /**
-   * Tests if a character is in the set of escaped_chars
-   * @param c the character code provided by the user
-   * @return true if it is in the set
-   */
-  bool isEscaped(wchar_t const c) const;
 
   /**
    * Read text from stream (analysis version, also used in postgeneration)

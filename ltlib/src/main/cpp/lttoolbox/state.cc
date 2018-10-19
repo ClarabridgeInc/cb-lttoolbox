@@ -244,7 +244,6 @@ struct sort_weights {
 bool
 State::filterFinals(map<Node *, double> const &finals,
                     Alphabet const &alphabet,
-                    set<wchar_t> const &escaped_chars,
                     int max_analyses, int max_weight_classes,
                     clb_writer_t out) const
 {
