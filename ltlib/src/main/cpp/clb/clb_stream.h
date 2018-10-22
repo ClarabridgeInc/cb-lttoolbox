@@ -254,6 +254,11 @@ public:
 #ifdef PRINT_WRITER_PROTO
         std::wcout << L"done" << std::endl;
 #endif
+        if (pToken != NULL && curChars.size() > 0)
+        {
+            flushChars();
+        }
+
         serialized_data.clear();
         lttResponse.SerializeToString(&serialized_data);
         lttResponse.Clear();

@@ -102,14 +102,14 @@ model {
 
         withType(SharedLibraryBinarySpec) {
             println toolChain
-            // cppCompiler.args '-std=c++0x', '-O0', '-g', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' 
-            cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' 
+            cppCompiler.args '-std=c++0x', '-O0', '-g', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' 
+            // cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' 
         }
         withType(NativeExecutableBinarySpec) {
             cppCompiler.define 'PRINT_WRITER_PROTO'
             // cppCompiler.define 'PRINT_ALPHABET_READ'
-            // cppCompiler.args '-std=c++0x', '-O0', '-g', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' 
-            cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0'
+            cppCompiler.args '-std=c++0x', '-O0', '-g', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0' 
+            // cppCompiler.args '-std=c++0x', '-O3', '-fPIC', '-D_GLIBCXX_USE_CXX11_ABI=0'
         }
     }
 
