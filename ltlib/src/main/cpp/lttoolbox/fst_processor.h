@@ -154,12 +154,16 @@ private:
   unsigned int lastBlank(wstring const &str);
   size_t firstNotAlpha(wstring const &sf);
 
+  void analysisIterattion(clb_stream_t &input, clb_writer_t out, State &current_state,
+          wstring &sf, bool &lf, bool &last_incond,
+          int &last, Buffer<int> &input_buffer, wchar_t val);
+
 public:
   FSTProcessor();
 
   void initAnalysis();
 
-  void analysis(clb_stream_t input, clb_writer_t out);
+  void analysis(clb_stream_t &input, clb_writer_t out);
 
   void load(istream &input);
 
