@@ -115,7 +115,8 @@ FSTProcessor::isAlphabetic(wchar_t const c) const
 void
 FSTProcessor::load(istream &input)
 {
-  if (input.tellg() == 0) {
+  std::istream::pos_type cur_pos = input.tellg();
+  if (cur_pos == 0) {
       char header[4]{};
       input.read(header, 4);
       if (strncmp(header, HEADER_LTTOOLBOX, 4) == 0) {
@@ -338,6 +339,11 @@ FSTProcessor::analysis(clb_stream_t &input, clb_writer_t out)
   while (last_incond)
   {
       analysisIterattion(input, out, current_state, sf, lf, last_incond, last, input_buffer, ' ');
+  }
+
+  if (out.isLFOpen())
+  {
+      analysisIterattion(input, out, current_state, sf, lf, last_incond, last, input_buffer, '.');
   }
 
   out.done(); 

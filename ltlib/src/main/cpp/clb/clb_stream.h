@@ -248,6 +248,11 @@ public:
     {
     }
 
+    bool isLFOpen()
+    {
+        return pLexForm != NULL;
+    }
+
     void
     done()
     {
@@ -337,6 +342,8 @@ public:
         pos += sf.size();
 
         pToken = NULL;
+        pLexForm = NULL;
+        curLF.clear();
     }
 
     void
