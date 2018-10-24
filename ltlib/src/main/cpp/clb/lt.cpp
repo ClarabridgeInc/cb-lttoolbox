@@ -94,6 +94,9 @@ main(int argc, char *argv[])
 
     {
         std::ifstream ifs(fstFileName, std::ifstream::binary);
+        if (!ifs) {
+            exit(EXIT_FAILURE);
+        }
         fstp.load(ifs); // hFst.get()
     }
 

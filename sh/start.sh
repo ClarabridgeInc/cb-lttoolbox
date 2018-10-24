@@ -10,8 +10,9 @@ JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4144"
 
     # -Dlog4j.debug=true\
     #-Dspring.profiles.active=prod\
-java \
-    -Dserver.port=$LTT_SVC_PORT\
+    # -Dserver.port=$LTT_SVC_PORT\
+
+SERVER_PORT=$LTT_SVC_PORT java \
     -Dmanagement.server.port=$LTT_MGMT_PORT\
     -Dspring.profiles.active=dev\
     $JPDA_OPTS\
