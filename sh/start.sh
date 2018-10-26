@@ -15,5 +15,6 @@ JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4144"
 SERVER_PORT=$LTT_SVC_PORT java \
     -Dmanagement.server.port=$LTT_MGMT_PORT\
     -Dspring.profiles.active=dev\
+    -Dord.bytedeco.javacpp.maxbytes=1G\
     $JPDA_OPTS\
     -jar $JAR_NAME
