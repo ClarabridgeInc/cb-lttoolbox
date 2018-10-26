@@ -48,7 +48,7 @@ public class LttService {
     }
 
     public byte [] analyze(String text) {
-        BytePointer res = fstProc.analyze(text);
+        BytePointer res = fstProc.analyze(text + " "); // LANG-2198: add space
         byte [] result = res.getStringBytes();
         return result;
     }
