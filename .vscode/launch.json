@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch",
             "program": "${workspaceFolder}/ltlib/build/exe/lt/lt",
-            "args": ["ben/ben.automorf.bin", "data/in2.txt"],
+            "args": ["ben/ben.automorf.bin", "data/in5.txt"],
             "cwd": "${workspaceFolder}"
         }
     ]
