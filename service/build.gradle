@@ -53,6 +53,8 @@ dependencies {
     testCompile libraries.junit_jupiter_api
     testCompile libraries.junit_jupiter_params
     testRuntime libraries.junit_jupiter_engine
+
+    testCompile libraries.assertj
 }
 
 bootJar {

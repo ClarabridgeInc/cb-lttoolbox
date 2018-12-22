@@ -4,9 +4,9 @@ ext {
         protobuf:                   'com.google.protobuf',
         slf4j:                      'org.slf4j',
 
-        junit_jupiter:              'org.junit.jupiter',
-
         springfox:                  'io.springfox',
+
+        junit_jupiter:              'org.junit.jupiter',
     ]
     versions = [
         lombok:                     '1.18.2',
