@@ -10,7 +10,7 @@ ext {
     ]
     versions = [
         lombok:                     '1.18.2',
-        protobuf:                   '3.5.1', // TODO: ask PLAT to upgrade to 3.6.1
+        protobuf:                   '3.9.0',
         javacpp:                    '1.4.2',
 
         slf4j:                      '1.7.5', // 1.7.25
