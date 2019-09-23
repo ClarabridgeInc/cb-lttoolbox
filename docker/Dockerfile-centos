@@ -6,8 +6,8 @@ RUN set -x \
     && yum install -y which wget make gcc gcc-c++\
     && yum clean -y all
 
-ENV CLB_CMAKE_VER_BIG 3.12
-ENV CLB_CMAKE_VER_SMALL 2
+ENV CLB_CMAKE_VER_BIG 3.15
+ENV CLB_CMAKE_VER_SMALL 3
 RUN wget "https://cmake.org/files/v$CLB_CMAKE_VER_BIG/cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL.tar.gz"\
     && tar zxvf cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL.tar.gz\
     && cd cmake-$CLB_CMAKE_VER_BIG.$CLB_CMAKE_VER_SMALL\
